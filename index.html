@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>うちの子カルテ - シニアペットの健康記録アプリ</title>
+  <meta name="description" content="愛犬・愛猫のシニア期を安心して過ごすための健康記録アプリ。通院記録・投薬管理・体調日誌をまとめて管理できます。">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, 'Helvetica Neue', sans-serif;
+      background: #faf9f7;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    .icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 22px;
+      background: #e8f4e8;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .features {
+      text-align: left;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .feature:last-child { border-bottom: none; }
+    .feature-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .feature-text { font-size: 14px; color: #444; line-height: 1.5; }
+    .feature-text strong { color: #1a1a1a; display: block; margin-bottom: 2px; }
+    .app-store-btn {
+      display: inline-block;
+      background: #000;
+      color: white;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: opacity 0.2s;
+    }
+    .app-store-btn:hover { opacity: 0.85; }
+    .footer {
+      margin-top: 48px;
+      font-size: 12px;
+      color: #aaa;
+    }
+    .footer a { color: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🐾</div>
+    <h1>うちの子カルテ</h1>
+    <p class="subtitle">シニアペットの健康記録をまとめて管理。<br>大切な家族の記録をいつでも手元に。</p>
+
+    <div class="features">
+      <div class="feature">
+        <span class="feature-icon">🏥</span>
+        <div class="feature-text">
+          <strong>通院・診察記録</strong>
+          受診日・病院・診断内容を記録
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">💊</span>
+        <div class="feature-text">
+          <strong>投薬管理</strong>
+          お薬の種類・用量・期間を管理
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📋</span>
+        <div class="feature-text">
+          <strong>体調日誌</strong>
+          毎日の様子・食欲・体重を記録
+        </div>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📸</span>
+        <div class="feature-text">
+          <strong>写真・動画メモ</strong>
+          気になる症状を画像で残せる
+        </div>
+      </div>
+    </div>
+
+    <a class="app-store-btn" href="https://apps.apple.com/jp/app/id6760578238" target="_blank">
+      App Store でダウンロード
+    </a>
+
+    <div class="footer">
+      <p>&copy; 2026 Kazuki Shiotsuki</p>
+      <br>
+      <a href="https://forms.gle/3RMvWQdvqa31zmWVA">お問い合わせ</a>
+    </div>
+  </div>
+</body>
+</html>
