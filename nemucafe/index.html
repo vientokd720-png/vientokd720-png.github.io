@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ねむカフェ - カフェインと睡眠の目安を1タップで確認</title>
+    <meta
+      name="description"
+      content="ねむカフェは、就寝時刻から逆算してカフェインの体内残量と、あと何mg飲めるかの目安を表示するiPhoneアプリです。"
+    />
+    <meta property="og:title" content="ねむカフェ" />
+    <meta
+      property="og:description"
+      content="この時間のコーヒー、今飲んで大丈夫？就寝時刻から逆算してカフェインの目安を確認。"
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#8b5d12" />
+    <style>
+      :root {
+        --paper: #fbf7ef;
+        --paper-deep: #efe3d1;
+        --ink: #221b14;
+        --muted: #6d6256;
+        --coffee: #8b5d12;
+        --coffee-dark: #6f4300;
+        --foam: #fffaf1;
+        --line: rgba(96, 61, 19, 0.14);
+        --sleep: #18243d;
+        --moon: #f8c957;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho",
+          "Noto Serif JP", serif;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(248, 201, 87, 0.24), transparent 26rem),
+          radial-gradient(circle at 86% 8%, rgba(139, 93, 18, 0.16), transparent 22rem),
+          linear-gradient(160deg, var(--paper) 0%, #fffdf8 48%, var(--paper-deep) 100%);
+        min-height: 100vh;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.24;
+        background-image:
+          linear-gradient(rgba(34, 27, 20, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34, 27, 20, 0.025) 1px, transparent 1px);
+        background-size: 34px 34px;
+        mask-image: linear-gradient(to bottom, black, transparent 86%);
+      }
+
+      .wrap {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 28px 0;
+        position: relative;
+        z-index: 2;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: linear-gradient(145deg, #fff 0%, #f2dfbd 100%);
+        box-shadow: 0 12px 30px rgba(111, 67, 0, 0.16);
+      }
+
+      nav {
+        display: flex;
+        gap: 18px;
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 14px;
+      }
+
+      nav a {
+        text-decoration: none;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.02fr 0.98fr;
+        gap: 56px;
+        align-items: center;
+        padding: 42px 0 86px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        color: var(--coffee-dark);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 34px;
+        height: 3px;
+        border-radius: 999px;
+        background: var(--coffee);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(44px, 7vw, 86px);
+        line-height: 1.08;
+        letter-spacing: -0.05em;
+      }
+
+      .lead {
+        max-width: 620px;
+        margin: 26px 0 0;
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: clamp(17px, 2vw, 21px);
+        line-height: 1.9;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        margin-top: 34px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        padding: 0 26px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--coffee-dark), #b98226);
+        color: #fff;
+        text-decoration: none;
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-weight: 800;
+        box-shadow: 0 18px 40px rgba(111, 67, 0, 0.24);
+      }
+
+      .note {
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 13px;
+      }
+
+      .phone-stage {
+        position: relative;
+        min-height: 650px;
+        display: grid;
+        place-items: center;
+      }
+
+      .moon {
+        position: absolute;
+        top: 20px;
+        right: 16%;
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        background: var(--moon);
+        box-shadow: 0 0 80px rgba(248, 201, 87, 0.45);
+      }
+
+      .moon::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 28px;
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        background: var(--paper);
+      }
+
+      .phone {
+        position: relative;
+        width: min(360px, 82vw);
+        border: 14px solid #151515;
+        border-radius: 44px;
+        background: var(--foam);
+        box-shadow: 0 34px 90px rgba(24, 36, 61, 0.24);
+        overflow: hidden;
+        transform: rotate(-2deg);
+      }
+
+      .phone::before {
+        content: "";
+        position: absolute;
+        z-index: 3;
+        top: 9px;
+        left: 50%;
+        width: 92px;
+        height: 20px;
+        border-radius: 0 0 18px 18px;
+        background: #151515;
+        transform: translateX(-50%);
+      }
+
+      .screen {
+        min-height: 690px;
+        padding: 48px 24px 28px;
+        background:
+          radial-gradient(circle at 50% -10%, rgba(248, 201, 87, 0.18), transparent 16rem),
+          var(--foam);
+      }
+
+      .date {
+        margin-top: 16px;
+        color: var(--ink);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 14px;
+      }
+
+      .remaining {
+        margin: 42px 0 0;
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-weight: 800;
+        font-size: 27px;
+      }
+
+      .remaining strong {
+        font-size: 82px;
+        letter-spacing: -0.08em;
+      }
+
+      .cup-note {
+        margin: 4px 0 32px 34px;
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 17px;
+      }
+
+      .bar {
+        height: 10px;
+        width: 150px;
+        margin: 0 auto 24px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--coffee-dark), #b98226);
+      }
+
+      .stats {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 12px;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 40px 0;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 16px 36px rgba(111, 67, 0, 0.07);
+      }
+
+      .metric {
+        padding: 22px 18px;
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+      }
+
+      .metric + .metric {
+        border-left: 1px solid var(--line);
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 30px;
+      }
+
+      .mock-button {
+        margin-top: 34px;
+        padding: 18px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--coffee-dark), #b98226);
+        color: #fff;
+        text-align: center;
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-weight: 800;
+      }
+
+      .log-title {
+        margin-top: 34px;
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .log {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(239, 227, 209, 0.48);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 13px;
+      }
+
+      .badge {
+        position: absolute;
+        right: 4%;
+        bottom: 82px;
+        width: 176px;
+        padding: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 30px;
+        background: var(--sleep);
+        color: #fff;
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-weight: 800;
+        line-height: 1.5;
+        box-shadow: 0 18px 50px rgba(24, 36, 61, 0.24);
+        transform: rotate(7deg);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        padding: 20px 0 88px;
+      }
+
+      .card {
+        min-height: 220px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: rgba(255, 250, 241, 0.72);
+        box-shadow: 0 18px 50px rgba(111, 67, 0, 0.08);
+      }
+
+      .card .num {
+        color: var(--coffee);
+        font-family: Georgia, serif;
+        font-size: 42px;
+        font-style: italic;
+      }
+
+      h2 {
+        margin: 14px 0 12px;
+        font-size: 24px;
+        line-height: 1.45;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        line-height: 1.8;
+      }
+
+      footer {
+        padding: 36px 0 48px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+        font-size: 13px;
+      }
+
+      footer .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 14px;
+      }
+
+      @media (max-width: 860px) {
+        nav {
+          display: none;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 30px;
+          padding-top: 18px;
+        }
+
+        .phone-stage {
+          min-height: 560px;
+        }
+
+        .phone {
+          width: min(330px, 90vw);
+          transform: none;
+        }
+
+        .screen {
+          min-height: 610px;
+        }
+
+        .remaining strong {
+          font-size: 68px;
+        }
+
+        .badge {
+          right: 0;
+          bottom: 28px;
+          width: 150px;
+          font-size: 13px;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+          padding-bottom: 56px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="wrap">
+      <div class="brand" aria-label="ねむカフェ">
+        <span class="mark" aria-hidden="true">☕</span>
+        <span>ねむカフェ</span>
+      </div>
+      <nav aria-label="ページ内メニュー">
+        <a href="#features">特徴</a>
+        <a href="#notice">ご利用にあたって</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero wrap">
+        <div>
+          <div class="eyebrow">CAFFEINE x SLEEP GUIDE</div>
+          <h1>
+            この時間の<br />
+            コーヒー、<br />
+            今飲んで大丈夫？
+          </h1>
+          <p class="lead">
+            ねむカフェは、就寝時刻から逆算してカフェインの体内残量と
+            「あと何mg飲めるか」の目安を表示するiPhoneアプリです。
+            飲む前の1タップで、今日の飲み方を決めやすくします。
+          </p>
+          <div class="cta-row">
+            <a class="button" href="#" aria-label="App Storeで見る">
+              App Storeで公開予定
+            </a>
+            <span class="note">コーヒー・お茶・エナジードリンクに対応</span>
+          </div>
+        </div>
+
+        <div class="phone-stage" aria-hidden="true">
+          <div class="moon"></div>
+          <div class="phone">
+            <div class="screen">
+              <div class="date">6月14日（日）</div>
+              <div class="remaining">あと <strong>210</strong>mg</div>
+              <div class="cup-note">コーヒーマグ約2杯分</div>
+              <div class="bar"></div>
+              <div class="stats">
+                <span>摂取済 90mg</span>
+                <span>今日の上限 300mg</span>
+              </div>
+              <div class="panel">
+                <div class="metric">
+                  <span>就寝まで</span>
+                  <strong>12時間</strong>
+                </div>
+                <div class="metric">
+                  <span>現在の体内残量</span>
+                  <strong>90mg</strong>
+                </div>
+              </div>
+              <div class="mock-button">☕ 今から飲む</div>
+              <div class="log-title">今日のログ</div>
+              <div class="log">
+                <span>10:54　ドリップコーヒー</span>
+                <strong>90mg</strong>
+              </div>
+            </div>
+          </div>
+          <div class="badge">就寝時刻から逆算して目安を表示</div>
+        </div>
+      </section>
+
+      <section id="features" class="features wrap" aria-label="ねむカフェの特徴">
+        <article class="card">
+          <div class="num">01</div>
+          <h2>飲む前に<br />1タップで確認</h2>
+          <p>
+            飲料を選ぶだけで、就寝時に残るカフェイン量の目安を確認できます。
+          </p>
+        </article>
+        <article class="card">
+          <div class="num">02</div>
+          <h2>あと何mg飲めるか<br />見える化</h2>
+          <p>
+            コーヒー何杯分に近いかも表示し、数字が苦手でも判断しやすくします。
+          </p>
+        </article>
+        <article class="card">
+          <div class="num">03</div>
+          <h2>あなた向けの<br />半減期設定</h2>
+          <p>
+            感受性や生活習慣をもとに、カフェインの効き方の目安を調整できます。
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <footer id="notice" class="wrap">
+      <p>
+        ねむカフェは医学的な診断、治療、睡眠改善を目的としたアプリではありません。
+        表示される数値や判定は、カフェイン摂取量と半減期モデルにもとづく生活上の目安です。
+      </p>
+      <div class="links">
+        <a href="https://boatneck-acai-610.notion.site/347007d5721280c0b059ebb720ce3d78">プライバシーポリシー</a>
+        <a href="https://boatneck-acai-610.notion.site/347007d5721280f08451d719d0d5d46d">利用規約</a>
+        <a href="mailto:rio@anotherball.com">お問い合わせ</a>
+      </div>
+    </footer>
+  </body>
+</html>
