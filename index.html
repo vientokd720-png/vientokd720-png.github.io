@@ -1,137 +1,182 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>うちの子カルテ - シニアペットの健康記録アプリ</title>
-  <meta name="description" content="愛犬・愛猫のシニア期を安心して過ごすための健康記録アプリ。通院記録・投薬管理・体調日誌をまとめて管理できます。">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>うちの子カルテ | 犬猫の通院に役立つ健康記録</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, 'Helvetica Neue', sans-serif;
-      background: #faf9f7;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(180deg, #eef7f1 0%, #fffaf4 58%, #ffffff 100%);
+      color: #1f2a24;
+      line-height: 1.8;
     }
-    .container {
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
-    }
-    .icon {
-      width: 100px;
-      height: 100px;
-      border-radius: 22px;
-      background: #e8f4e8;
-      margin: 0 auto 24px;
+    header, main, footer { width: min(1040px, calc(100% - 32px)); margin: 0 auto; }
+    header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      font-size: 52px;
+      padding: 28px 0 18px;
+    }
+    .brand { font-size: 18px; font-weight: 800; letter-spacing: .03em; }
+    nav { display: flex; gap: 18px; font-size: 13px; }
+    a { color: #407463; text-decoration: none; font-weight: 700; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
+      gap: 48px;
+      align-items: center;
+      padding: 72px 0 64px;
+    }
+    .eyebrow {
+      display: inline-block;
+      color: #407463;
+      background: rgba(74, 165, 146, .13);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
     }
     h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 8px;
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: 1.12;
+      letter-spacing: -.05em;
+      margin-bottom: 20px;
     }
-    .subtitle {
-      font-size: 15px;
-      color: #666;
-      margin-bottom: 32px;
-      line-height: 1.6;
+    .lead { font-size: 17px; color: #42504a; margin-bottom: 26px; max-width: 620px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 12px 20px;
+      background: #407463;
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(64, 116, 99, .22);
     }
+    .button.secondary {
+      background: rgba(255, 255, 255, .72);
+      color: #407463;
+      border: 1px solid rgba(64, 116, 99, .2);
+      box-shadow: none;
+    }
+    .phone-card {
+      border-radius: 36px;
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid rgba(64, 116, 99, .14);
+      box-shadow: 0 24px 80px rgba(55, 87, 75, .18);
+      padding: 28px;
+    }
+    .mock {
+      border-radius: 28px;
+      background: #4aaaa0;
+      color: #fff;
+      min-height: 520px;
+      padding: 34px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+    .mock::after {
+      content: "";
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      bottom: -28%;
+      height: 56%;
+      background: #fff;
+      border-radius: 50% 50% 0 0;
+    }
+    .mock h2 { font-size: 26px; line-height: 1.35; position: relative; z-index: 1; }
+    .mock p { font-size: 14px; position: relative; z-index: 1; opacity: .95; }
     .features {
-      text-align: left;
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 32px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 24px 0 80px;
     }
     .feature {
+      background: #fff;
+      border: 1px solid #edf0ed;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 14px 40px rgba(55, 87, 75, .08);
+    }
+    .feature h3 { font-size: 17px; margin-bottom: 8px; }
+    .feature p { font-size: 14px; color: #58645f; }
+    footer {
+      border-top: 1px solid #e8eee9;
+      padding: 26px 0 42px;
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid #f0f0f0;
+      justify-content: space-between;
+      gap: 16px;
+      color: #7a8580;
+      font-size: 13px;
     }
-    .feature:last-child { border-bottom: none; }
-    .feature-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-    .feature-text { font-size: 14px; color: #444; line-height: 1.5; }
-    .feature-text strong { color: #1a1a1a; display: block; margin-bottom: 2px; }
-    .app-store-btn {
-      display: inline-block;
-      background: #000;
-      color: white;
-      text-decoration: none;
-      padding: 14px 32px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      transition: opacity 0.2s;
+    @media (max-width: 780px) {
+      header { align-items: flex-start; gap: 16px; flex-direction: column; }
+      .hero { grid-template-columns: 1fr; padding-top: 36px; }
+      .features { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
     }
-    .app-store-btn:hover { opacity: 0.85; }
-    .footer {
-      margin-top: 48px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    .footer a { color: #aaa; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="icon">🐾</div>
-    <h1>うちの子カルテ</h1>
-    <p class="subtitle">シニアペットの健康記録をまとめて管理。<br>大切な家族の記録をいつでも手元に。</p>
-
-    <div class="features">
-      <div class="feature">
-        <span class="feature-icon">🏥</span>
-        <div class="feature-text">
-          <strong>通院・診察記録</strong>
-          受診日・病院・診断内容を記録
-        </div>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">💊</span>
-        <div class="feature-text">
-          <strong>投薬管理</strong>
-          お薬の種類・用量・期間を管理
-        </div>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">📋</span>
-        <div class="feature-text">
-          <strong>体調日誌</strong>
-          毎日の様子・食欲・体重を記録
-        </div>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">📸</span>
-        <div class="feature-text">
-          <strong>写真・動画メモ</strong>
-          気になる症状を画像で残せる
-        </div>
-      </div>
-    </div>
-
-    <a class="app-store-btn" href="https://apps.apple.com/jp/app/id6760578238" target="_blank">
-      App Store でダウンロード
-    </a>
-
-    <div class="footer">
-      <p>&copy; 2026 Kazuki Shiotsuki</p>
-      <br>
+  <header>
+    <div class="brand">うちの子カルテ</div>
+    <nav>
       <a href="https://forms.gle/3RMvWQdvqa31zmWVA">お問い合わせ</a>
-    </div>
-  </div>
+      <a href="./privacy-policy.html">プライバシーポリシー</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">犬猫の通院に役立つ健康記録</span>
+        <h1>大切な変化を、ちゃんと残せる安心を。</h1>
+        <p class="lead">
+          愛するうちの子の「いつも」を毎日かんたんに記録。
+          食事・水分・排泄・体調の変化を残して、診察時にそのまま見返せます。
+        </p>
+        <div class="actions">
+          <a class="button" href="https://apps.apple.com/jp/app/id6760578238" target="_blank">App Storeで見る</a>
+          <a class="button" href="https://forms.gle/3RMvWQdvqa31zmWVA">お問い合わせする</a>
+          <a class="button secondary" href="./privacy-policy.html">プライバシーポリシー</a>
+        </div>
+      </div>
+      <div class="phone-card">
+        <div class="mock">
+          <h2>「最近どうでしたか？」にも、もう困らない。</h2>
+          <p>記録、レポート、診察モード、病院・薬・医療費管理をひとつに。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature">
+        <h3>毎日の様子を記録</h3>
+        <p>食事、水分、排泄、元気、嘔吐、発作、呼吸などを短いメモや写真と一緒に残せます。</p>
+      </div>
+      <div class="feature">
+        <h3>診察前に見返せる</h3>
+        <p>最近の変化をレポートや診察モードで整理し、受診時に伝えたい内容を確認できます。</p>
+      </div>
+      <div class="feature">
+        <h3>通院情報もまとめて管理</h3>
+        <p>病院、薬、医療費、診察メモをひとつにまとめて、通院前後の確認をしやすくします。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Kazuki Shiotsuki</p>
+    <p>本アプリは診断、治療、医療判断を行うものではありません。</p>
+  </footer>
 </body>
 </html>
